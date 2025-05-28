@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "peak-shape-plugin"
+version = "0.3.3"
+description = "Atom plugin to process spectrum."
+readme = "README.md"
+keywords = [
+    "spectroscopy",
+    "atomic emission spectroscopy",
+    "linear detector",
+]
+authors = [
+    {name = "Pavel Vaschenko", email="vaschenko@vmk.ru"},
+]
+maintainers = [
+    {name = "Pavel Vaschenko", email="vaschenko@vmk.ru"},
+]
+license = {text = "MIT License"}
+dependencies = [
+    "setuptools>=75.8.0",
+    "spectrumlab-tiny",
+]
+requires-python = ">=3.12"
+
+[dependency-groups]
+linting = [
+]
+testing = [
+    "pytest",
+    "pytest-cov",
+]
+dev = [
+    {include-group = "linting"},
+    {include-group = "testing"},
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.csv", "*.md", "*.txt", "*.xml"]
+
+[tool.uv.sources]
+spectrumlab-tiny = { git = "https://github.com/Exinker/spectrumlab-tiny", rev = "ef3134a" }

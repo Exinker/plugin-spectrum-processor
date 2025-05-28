@@ -1,0 +1,8 @@
+.venv/
+atom/
+data/
+spd/
+__pycache__/
+
+.env
+.log
