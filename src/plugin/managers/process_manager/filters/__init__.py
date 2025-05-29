@@ -1,13 +1,16 @@
+from plugin.config import ProcessFilterType
+
 from .base_filter import AbstractFilter
 from .triangle_filter import TriangleFilter
 
 
-def load_filter(__type: str) -> AbstractFilter:
+def load_filter(__filter_type: ProcessFilterType) -> AbstractFilter:
 
-    if __type == 'triangle':
-        return TriangleFilter()
-    
-    raise NotImplementedError(f'Filter {__type} is not supported yet!')
+    match __filter_type:
+        case ProcessFilterType.triangle:
+            return TriangleFilter()
+
+    raise NotImplementedError(f'Filter type `{__filter_type}` is not supported yet!')
 
 
 __all__ = [
