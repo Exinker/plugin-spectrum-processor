@@ -1,6 +1,9 @@
-from .plugin_config import PluginConfig, PLUGIN_CONFIG
+from .plugin_config import PLUGIN_CONFIG
+from .process_config import ProcessFilterType, PROCESS_CONFIG
 
 
 __all__ = [
-    PluginConfig, PLUGIN_CONFIG,
+    ProcessFilterType,
+    PROCESS_CONFIG,
+    PLUGIN_CONFIG,
 ]
