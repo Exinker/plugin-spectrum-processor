@@ -1,6 +1,5 @@
 import logging
 
-from plugin.config import PROCESS_CONFIG
 from plugin.exceptions import exception_wrapper
 from plugin.managers.data_manager import DataManager
 from plugin.managers.process_manager import ProcessManager
@@ -14,7 +13,7 @@ def plugin_factory() -> 'Plugin':
 
     data_manager = DataManager()
     process_manager = ProcessManager(
-        filter=load_filter(PROCESS_CONFIG.filter_type),
+        filter=load_filter(),
     )
 
     return Plugin(

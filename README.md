@@ -26,4 +26,5 @@
 - `LOGGING_LEVEL: 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' = 'INFO'` - уровень логгирования;
 
 Преременные окружения алгоритма обработки спектра:
-- `PROCESS_FILTER_TYPE: 'triangle' = 'triangle'` - тип фильтра;
+- `PROCESS_FILTER_TYPE: 'triangle' | 'scale' = 'triangle'` - тип фильтра;
+- `PROCESS_N_CHUNKS: int = 64` - количество чанков (только для `'scale'` фильтра);
