@@ -31,11 +31,9 @@ class ProcessManager:
             len(spectra),
         )
         try:
-            processed_spectra = {}
-            for n, spectrum in spectra.items():
-                processed_spectra[n] = self.filter(
-                    spectrum=spectrum,
-                )
+            processed_spectra = self.filter(
+                spectra=spectra,
+            )
             return processed_spectra
 
         finally:

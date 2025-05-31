@@ -12,7 +12,7 @@ def load_filter() -> AbstractFilter:
             return TriangleFilter()
         case ProcessFilterType.scale:
             return ScaleFilter(
-                n_chunks=PROCESS_CONFIG.n_chunks,
+                window_size=PROCESS_CONFIG.window_size,
             )
 
     raise NotImplementedError(f'Filter type `{PROCESS_CONFIG.filter_type}` is not supported yet!')

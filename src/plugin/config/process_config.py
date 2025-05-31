@@ -13,7 +13,7 @@ class ProcessFilterType(Enum):
 class ProcessConfig(BaseSettings):
 
     filter_type: ProcessFilterType = Field(ProcessFilterType.triangle, alias='PROCESS_FILTER_TYPE')
-    n_chunks: int = Field(64, ge=2, le=512, alias='PROCESS_N_CHUNKS')
+    window_size: int = Field(8, ge=4, le=256, alias='PROCESS_WINDOW_SIZE')
 
     model_config = SettingsConfigDict(
         env_file='.env',

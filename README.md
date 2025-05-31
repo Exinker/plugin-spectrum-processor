@@ -27,4 +27,4 @@
 
 Преременные окружения алгоритма обработки спектра:
 - `PROCESS_FILTER_TYPE: 'triangle' | 'scale' = 'triangle'` - тип фильтра;
-- `PROCESS_N_CHUNKS: int = 64` - количество чанков (только для `'scale'` фильтра);
+- `PROCESS_WINDOW_SIZE: int = 8` - ширина окна (только для `'scale'` фильтра);

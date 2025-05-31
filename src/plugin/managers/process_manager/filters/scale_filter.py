@@ -1,4 +1,5 @@
 import logging
+from collections.abc import Mapping
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -12,91 +13,82 @@ LOGGER = logging.getLogger('plugin-spectrum-processor')
 
 def estimate_alpha(
     spectrum: Spectrum,
-    n_chunks: int,
+    window_size: int,
 ) -> float:
+    n_chunks = spectrum.n_numbers // window_size
 
-    alpha = np.zeros(n_chunks)
-    fitness = np.zeros(n_chunks)
+    mask = np.full(spectrum.n_numbers, False)
     for i in range(n_chunks):
-        left, right = i*(spectrum.n_numbers // n_chunks), (i + 1)*(spectrum.n_numbers // n_chunks)
+        left, right = i*window_size, (i + 1)*window_size
 
-        mask = (left < np.arange(spectrum.n_numbers)) & (np.arange(spectrum.n_numbers) <= right)
-        index_even = (np.arange(spectrum.n_numbers) % 2 == 0) & mask
-        index_odd = (np.arange(spectrum.n_numbers) % 2 == 1) & mask
+        sign = np.sign(np.diff(spectrum.intensity[left:right]))
+        n_sign_changes = np.sum(np.diff(sign[sign != 0]) != 0)
+        mask[left:right] = (n_sign_changes == window_size - 2).item()
 
-        x = 1 - np.mean(spectrum.intensity[index_even]) / np.mean(spectrum.intensity[index_odd])
-        intensity = spectrum.intensity.copy()
-        intensity[0::2] /= 1 - x/2
-        intensity[1::2] /= 1 + x/2
+    index_even = (np.arange(spectrum.n_numbers) % 2 == 0) & mask
+    index_odd = (np.arange(spectrum.n_numbers) % 2 == 1) & mask
 
-        fitness[i] = np.sum((np.abs(np.diff(intensity)))**(1/2))
-        alpha[i] = x
-
-    alpha0 = alpha[np.argmin(fitness)]
-
-    if LOGGER.level <= logging.DEBUG:
-
-        fig, (ax_left, ax_right) = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
-
-        plt.sca(ax_left)
-        plt.scatter(
-            alpha, fitness,
-            s=2,
-        )
-        plt.scatter(
-            alpha0, min(fitness),
-            color='red',
-            s=4,
-        )
-        plt.xlabel(r'$\alpha$')
-        plt.ylabel(r'$R$')
-        plt.grid(
-            color='grey', linestyle=':',
-        )
-
-        plt.sca(ax_right)
-        plt.plot(
-            spectrum.intensity,
-            label='raw',
-        )
-        plt.plot(
-            intensity,
-            label=rf'$\alpha_{{{alpha0:.4f}}}$',
-        )
-        plt.grid(
-            color='grey', linestyle=':',
-        )
-        plt.legend(
-            loc='upper right',
-        )
-
-        fig.show()
-
-    return alpha0
+    alpha = 1 - np.mean(spectrum.intensity[index_even]) / np.mean(spectrum.intensity[index_odd])
+    if np.isfinite(alpha):
+        return alpha
+    return 0
 
 
 class ScaleFilter(AbstractFilter):
 
     def __init__(
         self,
-        n_chunks: int,
+        window_size: int,
     ) -> None:
 
-        self.n_chunks = n_chunks
+        self.window_size = window_size
 
     def __call__(
         self,
-        spectrum: Spectrum,
-    ) -> Spectrum:
+        spectra: Mapping[int, Spectrum],
+    ) -> Mapping[int, Spectrum]:
 
-        alpha = estimate_alpha(
-            spectrum=spectrum,
-            n_chunks=self.n_chunks,
-        )
+        processed_spectra = {}
+        for n, spectrum in spectra.items():
+            alpha = estimate_alpha(
+                spectrum=spectrum,
+                window_size=self.window_size,
+            )
+            LOGGER.info(
+                'Process %s alpha: %s', f'{n+1:>4}', f'{alpha:.4f}',
+            )
 
-        intensity_scaled = spectrum.intensity.copy()
-        intensity_scaled[0::2] /= 1 - alpha/2
-        intensity_scaled[1::2] /= 1 + alpha/2
-        return Spectrum(
-            intensity=intensity_scaled,
-        )
+            intensity_scaled = spectrum.intensity.copy()
+            intensity_scaled[0::2] /= 1 - alpha/2
+            intensity_scaled[1::2] /= 1 + alpha/2
+
+            processed_spectra[n] = Spectrum(
+                intensity=intensity_scaled,
+            )
+
+        if LOGGER.level <= logging.DEBUG:
+            plt.subplots(figsize=(12, 6))
+
+            plt.plot(
+                np.concatenate([
+                    spectrum.intensity
+                    for spectrum in spectra.values()
+                ]),
+                label='raw',
+            )
+            plt.plot(
+                np.concatenate([
+                    spectrum.intensity
+                    for spectrum in processed_spectra.values()
+                ]),
+                label=rf'$\alpha_{{{alpha:.4f}}}$',
+            )
+            plt.grid(
+                color='grey', linestyle=':',
+            )
+            plt.legend(
+                loc='upper right',
+            )
+            plt.show()
+
+        return processed_spectra
