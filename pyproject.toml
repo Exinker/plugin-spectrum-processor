@@ -3,8 +3,8 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "peak-spectrum-processor"
-version = "0.2.0"
+name = "plugin-spectrum-processor"
+version = "0.2.1"
 description = "Atom plugin to process spectrum."
 readme = "README.md"
 keywords = [

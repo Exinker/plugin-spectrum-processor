@@ -7,8 +7,8 @@ import pkg_resources
 from .plugin import plugin_factory
 
 
-distribution = pkg_resources.get_distribution('peak_shape_plugin')
-__name__ = 'peak-shape-plugin'
+distribution = pkg_resources.get_distribution('plugin_spectrum_processor')
+__name__ = 'plugin-spectrum-processor'
 __version__ = distribution.version
 __author__ = 'Pavel Vaschenko'
 __email__ = 'vaschenko@vmk.ru'
