@@ -8,7 +8,7 @@ from plugin.config import PLUGIN_CONFIG
 from plugin.managers.data_manager.exceptions import InvalidDetectorTypeError
 from plugin.types import XML
 from spectrumlab.detectors import Detector
-from spectrumlab.noise import Noise
+from spectrumlab.noises import Noise
 from spectrumlab.spectra import Spectrum
 from spectrumlab.types import Array
 

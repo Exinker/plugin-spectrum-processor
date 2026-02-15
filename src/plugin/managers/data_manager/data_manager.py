@@ -12,11 +12,16 @@ from plugin.managers.data_manager.exceptions import (
     DataManagerError,
     LoadDataXMLError,
     ParseDataXMLError,
+    ParseFilepathXMLError,
     ParseSpectraXMLError,
 )
-from plugin.managers.data_manager.parsers import AtomSpectraParser
+from plugin.managers.data_manager.parsers import (
+    AtomSpectraParser,
+    FilepathParser,
+)
 from plugin.managers.data_manager.parsers.atom_spectra_parser import numpy_array_from_b64
 from plugin.managers.data_manager.utils import load_xml
+from plugin.types import XML
 from spectrumlab.spectra import Spectrum
 
 
@@ -25,17 +30,9 @@ LOGGER = logging.getLogger('plugin-spectrum-processor')
 
 class DataManager:
 
-    def parse(
-        self,
-        filepath: str,
-    ) -> Mapping[int, Spectrum]:
+    def parse(self, xml: XML) -> Mapping[int, Spectrum]:
 
         started_at = time.perf_counter()
-        try:
-            xml = load_xml(filepath)
-        except (LoadDataXMLError, ParseDataXMLError) as error:
-            raise DataManagerError from error
-
         try:
             spectra = AtomSpectraParser.from_xml(xml=xml)
             return spectra
@@ -55,14 +52,9 @@ class DataManager:
 
     def build(
         self,
-        filepath: str,
+        xml: XML,
         processed_spectra: Mapping[int, Spectrum],
     ) -> str:
-
-        try:
-            xml = load_xml(filepath)
-        except (LoadDataXMLError, ParseDataXMLError) as error:
-            raise DataManagerError from error
 
         try:
             buffer = np.concat([
