@@ -1374,6 +1374,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "ipympl" },
     { name = "jupyter" },
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -1383,6 +1384,7 @@ notebook = [
     { name = "ipympl" },
 ]
 notebooks = [
+    { name = "ipympl" },
     { name = "jupyter" },
 ]
 testing = [
@@ -1394,11 +1396,12 @@ testing = [
 [package.metadata]
 requires-dist = [
     { name = "setuptools", specifier = ">=75.8.0" },
-    { name = "spectrumlab", git = "https://github.com/Exinker/spectrumlab?rev=0.9.1" },
+    { name = "spectrumlab", editable = "../../spectrumlab" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "ipympl", specifier = ">=0.10.0" },
     { name = "jupyter", specifier = ">=1.1.1" },
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -1406,7 +1409,10 @@ dev = [
 ]
 linting = []
 notebook = [{ name = "ipympl", specifier = ">=0.10.0" }]
-notebooks = [{ name = "jupyter", specifier = ">=1.1.1" }]
+notebooks = [
+    { name = "ipympl", specifier = ">=0.10.0" },
+    { name = "jupyter", specifier = ">=1.1.1" },
+]
 testing = [
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -1971,7 +1977,7 @@ wheels = [
 [[package]]
 name = "spectrumlab"
 version = "0.9.1"
-source = { git = "https://github.com/Exinker/spectrumlab?rev=0.9.1#94c8f4f6a38b610c894d0ddce35a3e1729892605" }
+source = { editable = "../../spectrumlab" }
 dependencies = [
     { name = "matplotlib" },
     { name = "numpy" },
@@ -1980,6 +1986,35 @@ dependencies = [
     { name = "pydantic-settings" },
     { name = "scipy" },
     { name = "tqdm" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "matplotlib", specifier = ">=3.9.0" },
+    { name = "numpy", specifier = ">=2.1.3" },
+    { name = "pandas", specifier = ">=2.2.3" },
+    { name = "pydantic", specifier = "==2.11.1" },
+    { name = "pydantic-settings", specifier = "==2.8.1" },
+    { name = "scipy", specifier = ">=1.14.1" },
+    { name = "tqdm", specifier = ">=4.67.1" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "flake8" },
+    { name = "flake8-bugbear" },
+    { name = "flake8-builtins" },
+    { name = "flake8-commas" },
+    { name = "flake8-import-order" },
+    { name = "pep8-naming" },
+]
+linting = [
+    { name = "flake8" },
+    { name = "flake8-bugbear" },
+    { name = "flake8-builtins" },
+    { name = "flake8-commas" },
+    { name = "flake8-import-order" },
+    { name = "pep8-naming" },
 ]
 
 [[package]]
@@ -1991,7 +2026,7 @@ dependencies = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "spectrumlab", git = "https://github.com/Exinker/spectrumlab?rev=0.9.1" }]
+requires-dist = [{ name = "spectrumlab", editable = "../../spectrumlab" }]
 
 [package.metadata.requires-dev]
 dev = [

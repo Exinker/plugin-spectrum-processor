@@ -34,6 +34,7 @@ testing = [
     "spectrumlab_emulations",
 ]
 notebooks = [
+    "ipympl>=0.10.0",
     "jupyter>=1.1.1",
 ]
 dev = [
@@ -52,6 +53,7 @@ where = ["src"]
 "*" = ["*.csv", "*.md", "*.txt", "*.xml"]
 
 [tool.uv.sources]
-spectrumlab = { git = "https://github.com/Exinker/spectrumlab", rev = "0.9.1" }
+# spectrumlab = { git = "https://github.com/Exinker/spectrumlab", rev = "0.9.1" }
+spectrumlab = { path = "C:/Users/Exinker/Documents/spectrumlab", editable = true }
 # spectrumlab_emulations = { git = "https://github.com/Exinker/spectrumlab-emulations", rev = "0.1.3" }
 spectrumlab_emulations = { path = "C:/Users/Exinker/Documents/spectrumlab-emulations", editable = true }
