@@ -63,6 +63,22 @@ def estimate_alpha(
     return 0
 
 
+def estimate_params(
+    spectrum: Spectrum,
+    mask: Array[bool],
+) -> float:
+
+    index_even = (np.arange(spectrum.n_numbers) % 2 == 0) & mask
+    index_odd = (np.arange(spectrum.n_numbers) % 2 == 1) & mask
+
+    R = np.mean(spectrum.intensity[index_even]) / np.mean(spectrum.intensity[index_odd])
+
+    alpha = 2 * (1 - R) / (1 + R)
+    if np.isfinite(alpha):
+        return alpha
+    return 0
+
+
 class ScaleFilter(AbstractFilter):
 
     def __init__(
