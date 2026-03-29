@@ -9,7 +9,7 @@ from plugin.managers.data_manager.exceptions import InvalidDetectorTypeError
 from plugin.types import XML
 from spectrumlab.detectors import Detector
 from spectrumlab.noises import Noise
-from spectrumlab.spectra import Spectrum
+from spectrumlab.spectra import EmittedSpectrum
 from spectrumlab.types import Array
 
 LOGGER = logging.getLogger('plugin-spectrum-processor')
@@ -18,7 +18,7 @@ LOGGER = logging.getLogger('plugin-spectrum-processor')
 class AtomSpectraParser:
 
     @classmethod
-    def from_xml(cls, xml: XML) -> Mapping[int, Spectrum]:
+    def from_xml(cls, xml: XML) -> Mapping[int, EmittedSpectrum]:
 
         spectra = []
         for probe in xml.find('probes').findall('probe'):
@@ -45,7 +45,7 @@ class AtomSpectraParser:
                 for i in range(n_detectors):
                     number = np.arange(detector_size * i, detector_size * (i + 1))
 
-                    spe = Spectrum(
+                    spe = EmittedSpectrum(
                         intensity=intensity[number],
                         wavelength=wavelength[number],
                         clipped=clipped[number],

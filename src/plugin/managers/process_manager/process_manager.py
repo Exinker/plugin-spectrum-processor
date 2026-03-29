@@ -4,7 +4,7 @@ from collections.abc import Mapping
 
 from plugin.managers.process_manager.filters.base_filter import AbstractFilter
 from plugin.presentation.callbacks import AbstractProgressCallback, NullProgressCallback
-from spectrumlab.spectra import Spectrum
+from spectrumlab.spectra import EmittedSpectrum
 
 LOGGER = logging.getLogger('plugin-spectrum-processor')
 
@@ -20,9 +20,9 @@ class ProcessManager:
 
     def process(
         self,
-        spectra: Mapping[int, Spectrum],
+        spectra: Mapping[int, EmittedSpectrum],
         progress_callback: AbstractProgressCallback | None = None,
-    ) -> Mapping[int, Spectrum]:
+    ) -> Mapping[int, EmittedSpectrum]:
         progress_callback = progress_callback or NullProgressCallback()
         started_at = time.perf_counter()
 

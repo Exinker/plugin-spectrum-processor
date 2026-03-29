@@ -22,7 +22,7 @@ from plugin.managers.data_manager.parsers import (
 from plugin.managers.data_manager.parsers.atom_spectra_parser import numpy_array_from_b64
 from plugin.managers.data_manager.utils import load_xml
 from plugin.types import XML
-from spectrumlab.spectra import Spectrum
+from spectrumlab.spectra import EmittedSpectrum
 
 
 LOGGER = logging.getLogger('plugin-spectrum-processor')
@@ -30,7 +30,7 @@ LOGGER = logging.getLogger('plugin-spectrum-processor')
 
 class DataManager:
 
-    def parse(self, xml: XML) -> Mapping[int, Spectrum]:
+    def parse(self, xml: XML) -> Mapping[int, EmittedSpectrum]:
 
         started_at = time.perf_counter()
         try:
@@ -53,7 +53,7 @@ class DataManager:
     def build(
         self,
         xml: XML,
-        processed_spectra: Mapping[int, Spectrum],
+        processed_spectra: Mapping[int, EmittedSpectrum],
     ) -> str:
 
         try:

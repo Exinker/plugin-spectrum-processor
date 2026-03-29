@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from plugin.managers.process_manager.filters.base_filter import AbstractFilter
-from spectrumlab.spectra import Spectrum
+from spectrumlab.spectra import EmittedSpectrum
 
 
 LOGGER = logging.getLogger('plugin-spectrum-processor')
@@ -13,12 +13,12 @@ LOGGER = logging.getLogger('plugin-spectrum-processor')
 
 class TriangleFilter(AbstractFilter):
 
-    def __call__(self, spectra: Mapping[int, Spectrum]) -> Mapping[int, Spectrum]:
+    def __call__(self, spectra: Mapping[int, EmittedSpectrum]) -> Mapping[int, EmittedSpectrum]:
 
         processed_spectra = {}
         for n, spectrum in spectra.items():
             intensity = np.convolve(spectrum.intensity, [.25, .5, .25], mode='same')
-            processed_spectra[n] = Spectrum(
+            processed_spectra[n] = EmittedSpectrum(
                 intensity=intensity,
             )
 

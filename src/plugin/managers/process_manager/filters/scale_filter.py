@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from plugin.managers.process_manager.filters.base_filter import AbstractFilter
-from spectrumlab.spectra import Spectrum
+from spectrumlab.spectra import EmittedSpectrum
 from spectrumlab.types import Array
 
 
@@ -13,7 +13,7 @@ LOGGER = logging.getLogger('plugin-spectrum-processor')
 
 
 def estimate_mask_v1(
-    spectrum: Spectrum,
+    spectrum: EmittedSpectrum,
     window_size: int,
 ) -> Array[bool]:
     n_chunks = spectrum.n_numbers // window_size
@@ -30,7 +30,7 @@ def estimate_mask_v1(
 
 
 def estimate_mask_v2(
-    spectrum: Spectrum,
+    spectrum: EmittedSpectrum,
     window_size: int,
 ) -> Array[bool]:
 
@@ -48,7 +48,7 @@ def estimate_mask_v2(
 
 
 def estimate_alpha(
-    spectrum: Spectrum,
+    spectrum: EmittedSpectrum,
     mask: Array[bool],
 ) -> float:
 
@@ -64,7 +64,7 @@ def estimate_alpha(
 
 
 def estimate_params(
-    spectrum: Spectrum,
+    spectrum: EmittedSpectrum,
     mask: Array[bool],
 ) -> float:
 
@@ -90,8 +90,8 @@ class ScaleFilter(AbstractFilter):
 
     def __call__(
         self,
-        spectra: Mapping[int, Spectrum],
-    ) -> Mapping[int, Spectrum]:
+        spectra: Mapping[int, EmittedSpectrum],
+    ) -> Mapping[int, EmittedSpectrum]:
 
         processed_spectra = {}
         for n, spectrum in spectra.items():
@@ -107,7 +107,7 @@ class ScaleFilter(AbstractFilter):
             intensity_scaled[0::2] /= 1 - alpha/2
             intensity_scaled[1::2] /= 1 + alpha/2
 
-            processed_spectra[n] = Spectrum(
+            processed_spectra[n] = EmittedSpectrum(
                 intensity=intensity_scaled,
             )
 

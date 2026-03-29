@@ -1,6 +1,6 @@
 .venv/
 atom/
-data/
+# data/
 src/*.egg-info/
 spd/
 __pycache__/
