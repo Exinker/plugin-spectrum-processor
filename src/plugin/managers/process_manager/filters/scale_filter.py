@@ -4,9 +4,11 @@ from collections.abc import Mapping
 import matplotlib.pyplot as plt
 import numpy as np
 
-from plugin.managers.process_manager.filters.base_filter import AbstractFilter
+from spectrumlab.backgrounds.savitzky_golay_background import SavitzkyGolayBackgroundConfig, approximate_savitzky_golay
 from spectrumlab.spectra import EmittedSpectrum
 from spectrumlab.types import Array
+
+from plugin.managers.process_manager.filters.base_filter import AbstractFilter
 
 
 LOGGER = logging.getLogger('plugin-spectrum-processor')
@@ -79,7 +81,7 @@ def estimate_params(
     return 0
 
 
-class ScaleFilter(AbstractFilter):
+class ScaleFilterV1(AbstractFilter):
 
     def __init__(
         self,
@@ -96,6 +98,76 @@ class ScaleFilter(AbstractFilter):
         processed_spectra = {}
         for n, spectrum in spectra.items():
             alpha = estimate_alpha(
+                spectrum=spectrum,
+                window_size=self.window_size,
+            )
+            LOGGER.info(
+                'Process %s alpha: %s', f'{n+1:>4}', f'{alpha:.4f}',
+            )
+
+            intensity_scaled = spectrum.intensity.copy()
+            intensity_scaled[0::2] /= 1 - alpha/2
+            intensity_scaled[1::2] /= 1 + alpha/2
+
+            processed_spectra[n] = EmittedSpectrum(
+                intensity=intensity_scaled,
+            )
+
+        if LOGGER.level <= logging.DEBUG:
+            plt.subplots(figsize=(12, 6))
+
+            plt.plot(
+                np.concatenate([
+                    spectrum.intensity
+                    for spectrum in spectra.values()
+                ]),
+                label=r'$s_{0}$',
+            )
+            plt.plot(
+                np.concatenate([
+                    spectrum.intensity
+                    for spectrum in processed_spectra.values()
+                ]),
+                label=r'$s$',
+            )
+            plt.grid(
+                color='grey', linestyle=':',
+            )
+            plt.legend(
+                loc='upper right',
+            )
+            plt.show()
+
+        return processed_spectra
+
+
+class ScaleFilterV2(AbstractFilter):
+
+    def __init__(
+        self,
+        window_size: int,
+    ) -> None:
+
+        self.window_size = window_size
+
+    def _estimate_alpha(
+        self,
+        spectrum: EmittedSpectrum,
+    ) -> Array[float]:
+
+        number = np.arange(len(spectrum.intensity))
+        index_even = number % 2 == 0
+        index_odd = number % 2 == 1
+
+
+    def __call__(
+        self,
+        spectra: Mapping[int, EmittedSpectrum],
+    ) -> Mapping[int, EmittedSpectrum]:
+
+        processed_spectra = {}
+        for n, spectrum in spectra.items():
+            alpha = self._estimate_alpha(
                 spectrum=spectrum,
                 window_size=self.window_size,
             )

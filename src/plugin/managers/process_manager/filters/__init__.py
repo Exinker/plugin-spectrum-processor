@@ -1,7 +1,7 @@
 from plugin.config import ProcessFilterType, PROCESS_CONFIG
 
 from .base_filter import AbstractFilter
-from .scale_filter import ScaleFilter
+from .scale_filter import ScaleFilterV1
 from .triangle_filter import TriangleFilter
 
 
@@ -11,7 +11,7 @@ def load_filter() -> AbstractFilter:
         case ProcessFilterType.triangle:
             return TriangleFilter()
         case ProcessFilterType.scale:
-            return ScaleFilter(
+            return ScaleFilterV1(
                 window_size=PROCESS_CONFIG.window_size,
             )
 
